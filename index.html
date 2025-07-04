@@ -123,9 +123,10 @@
       padding: 4px;
     }
     .history {
-      max-width: 95%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       margin: 20px auto;
-      text-align: center;
     }
     .history table {
       margin: 0 auto;
@@ -135,6 +136,17 @@
     .history th, .history td {
       border: 1px solid #ffcce0;
       padding: 6px;
+    }
+    .delete-btn {
+      background-color: #ff99c8;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      padding: 4px 8px;
+    }
+    .delete-btn:hover {
+      background-color: #ff7aa2;
     }
   </style>
 </head>
@@ -218,27 +230,29 @@
     </div>
   </div>
 
-<div class="history" style="display:flex; flex-direction:column; align-items:center; margin:20px auto;">
-  <h3 style="margin-bottom:10px;">📅 Daily Log History</h3>
-  <div style="overflow-x:auto;">
-    <table id="historyTable" style="background:#fff0f5; border-collapse:collapse;">
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Breakfast</th>
-          <th>Lunch</th>
-          <th>Dinner</th>
-          <th>Snacks</th>
-          <th>Workout</th>
-          <th>Water</th>
-          <th>Measurements</th>
-          <th>Net Calories</th>
-        </tr>
-      </thead>
-      <tbody id="historyBody"></tbody>
-    </table>
+  <div class="history">
+    <h3>📅 Daily Log History</h3>
+    <div style="overflow-x:auto;">
+      <table id="historyTable">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Breakfast</th>
+            <th>Lunch</th>
+            <th>Dinner</th>
+            <th>Snacks</th>
+            <th>Workout</th>
+            <th>Water</th>
+            <th>Measurements</th>
+            <th>Net Calories</th>
+            <th>Delete</th>
+          </tr>
+        </thead>
+        <tbody id="historyBody"></tbody>
+      </table>
+    </div>
   </div>
-</div>
+
 <script>
 let today = new Date();
 let selectedDate = new Date();
@@ -320,47 +334,4 @@ function selectDate(y,m,d) {
   document.getElementById("dinner").value = data.meals?.dinner || "";
   document.getElementById("snacks").value = data.meals?.snacks || "";
   document.getElementById("workoutType").value = data.workout?.type || "";
-  document.getElementById("workoutCalories").value = data.workout?.calories || "";
-  document.getElementById("waterGlasses").value = data.water?.glasses || "";
-  document.getElementById("waist").value = data.measurements?.waist || "";
-  document.getElementById("hips").value = data.measurements?.hips || "";
-  document.getElementById("arms").value = data.measurements?.arms || "";
-  document.getElementById("thighs").value = data.measurements?.thighs || "";
-  showTab('meals');
-  updateSummary();
-}
-
-function deleteLog(dateKey) {
-  if (confirm(`Delete log for ${dateKey}?`)) {
-    delete dailyData[dateKey];
-    saveDayData();
-    updateHistoryTable();
-    renderCalendar();
-  }
-}
-
-function saveMeals() { loadDayData(); dailyData[selectedDateString].meals = {
-  breakfast: document.getElementById("breakfast").value,
-  lunch: document.getElementById("lunch").value,
-  dinner: document.getElementById("dinner").value,
-  snacks: document.getElementById("snacks").value
-}; saveDayData(); updateSummary(); alert("Meals saved!"); }
-function saveWorkout() { loadDayData(); dailyData[selectedDateString].workout = {
-  type: document.getElementById("workoutType").value,
-  calories: document.getElementById("workoutCalories").value
-}; saveDayData(); updateSummary(); alert("Workout saved!"); }
-function saveWater() { loadDayData(); dailyData[selectedDateString].water = {
-  glasses: document.getElementById("waterGlasses").value
-}; saveDayData(); alert("Water saved!"); }
-function saveMeasurements() { loadDayData(); dailyData[selectedDateString].measurements = {
-  waist: document.getElementById("waist").value,
-  hips: document.getElementById("hips").value,
-  arms: document.getElementById("arms").value,
-  thighs: document.getElementById("thighs").value
-}; saveDayData(); alert("Measurements saved!"); }
-
-renderCalendar();
-updateHistoryTable();
-</script>
-</body>
-</html>
+  document.getElementById("workoutCalories").value = data.workout?.calories |
