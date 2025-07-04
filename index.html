@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Azalea's Tracker</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     body {
       font-family: "Helvetica", sans-serif;
@@ -148,6 +149,18 @@
     .delete-btn:hover {
       background-color: #ff7aa2;
     }
+    .download-btn {
+      background-color: #ff99c8;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      padding: 8px 12px;
+      margin-top: 15px;
+    }
+    .download-btn:hover {
+      background-color: #ff7aa2;
+    }
   </style>
 </head>
 <body>
@@ -180,7 +193,6 @@
       <button onclick="showTab('measurements')">Measurements</button>
     </div>
 
-    <!-- Meals Tab -->
     <div id="mealsTab" class="tab-section">
       <h3>Meals</h3>
       <table>
@@ -193,7 +205,6 @@
       <button onclick="saveMeals()" style="margin-top:10px;">Save Meals</button>
     </div>
 
-    <!-- Workouts Tab -->
     <div id="workoutsTab" class="tab-section" style="display:none;">
       <h3>Workouts</h3>
       <table>
@@ -206,7 +217,6 @@
       <button onclick="saveWorkout()" style="margin-top:10px;">Save Workout</button>
     </div>
 
-    <!-- Water Tab -->
     <div id="waterTab" class="tab-section" style="display:none;">
       <h3>Water Intake</h3>
       <table>
@@ -216,7 +226,6 @@
       <button onclick="saveWater()" style="margin-top:10px;">Save Water</button>
     </div>
 
-    <!-- Measurements Tab -->
     <div id="measurementsTab" class="tab-section" style="display:none;">
       <h3>Measurements</h3>
       <table>
@@ -251,6 +260,7 @@
         <tbody id="historyBody"></tbody>
       </table>
     </div>
+    <button onclick="downloadPDF()" class="download-btn">Download Log as PDF</button>
   </div>
 
 <script>
@@ -378,9 +388,37 @@ function deleteLog(dateKey) {
   if (confirm(`Delete log for ${dateKey}?`)) {
     delete dailyData[dateKey];
     saveDayData();
-    updateHistoryTable();
-    renderCalendar();
   }
+}
+
+async function downloadPDF() {
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF();
+  const table = document.getElementById("historyTable");
+  let rows = [];
+  let headers = [];
+
+  table.querySelectorAll("thead th").forEach(th => headers.push(th.innerText));
+  table.querySelectorAll("tbody tr").forEach(tr => {
+    let row = [];
+    tr.querySelectorAll("td").forEach(td => row.push(td.innerText));
+    rows.push(row);
+  });
+
+  pdf.text("Azalea's Tracker Log History", 14, 20);
+  let y = 30;
+  pdf.setFontSize(10);
+  pdf.text(headers.join(" | "), 14, y);
+  y += 10;
+  rows.forEach(r => {
+    pdf.text(r.join(" | "), 14, y);
+    y += 8;
+    if (y > 280) {
+      pdf.addPage();
+      y = 20;
+    }
+  });
+  pdf.save("azaleas_log_history.pdf");
 }
 
 function saveMeals() { loadDayData(); dailyData[selectedDateString].meals = {
