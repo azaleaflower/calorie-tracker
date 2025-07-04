@@ -105,6 +105,21 @@
     .tabs-container button:hover {
       background-color: #ff7aa2;
     }
+    .tabs-container table {
+      width: 100%;
+      border: 1px solid #ffcce0;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    .tabs-container th, .tabs-container td {
+      border: 1px solid #ffcce0;
+      padding: 8px;
+      text-align: left;
+    }
+    .tabs-container input {
+      width: 90%;
+      padding: 4px;
+    }
   </style>
 </head>
 <body>
@@ -140,22 +155,23 @@
     <!-- Meals Tab -->
     <div id="mealsTab" class="tab-section">
       <h3>Meals</h3>
-      <table style="width:100%; border-collapse:collapse;">
+      <table>
+        <tr><th>Meal</th><th>Calories</th></tr>
         <tr>
           <td>Breakfast</td>
-          <td><input id="breakfast" placeholder="Calories" type="number" /></td>
+          <td><input id="breakfast" type="number" placeholder="Calories"/></td>
         </tr>
         <tr>
           <td>Lunch</td>
-          <td><input id="lunch" placeholder="Calories" type="number" /></td>
+          <td><input id="lunch" type="number" placeholder="Calories"/></td>
         </tr>
         <tr>
           <td>Dinner</td>
-          <td><input id="dinner" placeholder="Calories" type="number" /></td>
+          <td><input id="dinner" type="number" placeholder="Calories"/></td>
         </tr>
         <tr>
           <td>Snacks</td>
-          <td><input id="snacks" placeholder="Calories" type="number" /></td>
+          <td><input id="snacks" type="number" placeholder="Calories"/></td>
         </tr>
       </table>
       <button onclick="saveMeals()" style="margin-top:10px;">Save Meals</button>
@@ -164,14 +180,11 @@
     <!-- Workouts Tab -->
     <div id="workoutsTab" class="tab-section" style="display:none;">
       <h3>Workouts</h3>
-      <table style="width:100%; border-collapse:collapse;">
+      <table>
+        <tr><th>Type</th><th>Calories Burned</th></tr>
         <tr>
-          <td>Type</td>
-          <td><input id="workoutType" placeholder="Running, Yoga, etc." /></td>
-        </tr>
-        <tr>
-          <td>Calories Burned</td>
-          <td><input id="workoutCalories" type="number" /></td>
+          <td><input id="workoutType" placeholder="Running, Yoga, etc."/></td>
+          <td><input id="workoutCalories" type="number"/></td>
         </tr>
       </table>
       <button onclick="saveWorkout()" style="margin-top:10px;">Save Workout</button>
@@ -180,10 +193,10 @@
     <!-- Water Tab -->
     <div id="waterTab" class="tab-section" style="display:none;">
       <h3>Water Intake</h3>
-      <table style="width:100%; border-collapse:collapse;">
+      <table>
+        <tr><th>Glasses of Water</th></tr>
         <tr>
-          <td>Glasses</td>
-          <td><input id="waterGlasses" type="number" /></td>
+          <td><input id="waterGlasses" type="number"/></td>
         </tr>
       </table>
       <button onclick="saveWater()" style="margin-top:10px;">Save Water</button>
@@ -192,22 +205,23 @@
     <!-- Measurements Tab -->
     <div id="measurementsTab" class="tab-section" style="display:none;">
       <h3>Measurements</h3>
-      <table style="width:100%; border-collapse:collapse;">
+      <table>
+        <tr><th>Body Part</th><th>Inches</th></tr>
         <tr>
-          <td>Waist (in)</td>
-          <td><input id="waist" type="number" step="0.1" /></td>
+          <td>Waist</td>
+          <td><input id="waist" type="number" step="0.1"/></td>
         </tr>
         <tr>
-          <td>Hips (in)</td>
-          <td><input id="hips" type="number" step="0.1" /></td>
+          <td>Hips</td>
+          <td><input id="hips" type="number" step="0.1"/></td>
         </tr>
         <tr>
-          <td>Arms (in)</td>
-          <td><input id="arms" type="number" step="0.1" /></td>
+          <td>Arms</td>
+          <td><input id="arms" type="number" step="0.1"/></td>
         </tr>
         <tr>
-          <td>Thighs (in)</td>
-          <td><input id="thighs" type="number" step="0.1" /></td>
+          <td>Thighs</td>
+          <td><input id="thighs" type="number" step="0.1"/></td>
         </tr>
       </table>
       <button onclick="saveMeasurements()" style="margin-top:10px;">Save Measurements</button>
@@ -224,7 +238,6 @@ function renderCalendar() {
   const month = today.getMonth();
   const firstDay = new Date(year, month, 1).getDay();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
-
   const calendar = document.getElementById("calendar");
   const monthYear = document.getElementById("monthYear");
   monthYear.textContent = `${today.toLocaleString('default', { month: 'long' })} ${year}`;
