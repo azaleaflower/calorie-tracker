@@ -218,28 +218,27 @@
     </div>
   </div>
 
-  <div class="history">
-    <h3>📅 Daily Log History</h3>
-    <div style="overflow-x:auto;">
-      <table id="historyTable">
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Breakfast</th>
-            <th>Lunch</th>
-            <th>Dinner</th>
-            <th>Snacks</th>
-            <th>Workout</th>
-            <th>Water</th>
-            <th>Measurements</th>
-            <th>Net Calories</th>
-          </tr>
-        </thead>
-        <tbody id="historyBody"></tbody>
-      </table>
-    </div>
+<div class="history" style="display:flex; flex-direction:column; align-items:center; margin:20px auto;">
+  <h3 style="margin-bottom:10px;">📅 Daily Log History</h3>
+  <div style="overflow-x:auto;">
+    <table id="historyTable" style="background:#fff0f5; border-collapse:collapse;">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Breakfast</th>
+          <th>Lunch</th>
+          <th>Dinner</th>
+          <th>Snacks</th>
+          <th>Workout</th>
+          <th>Water</th>
+          <th>Measurements</th>
+          <th>Net Calories</th>
+        </tr>
+      </thead>
+      <tbody id="historyBody"></tbody>
+    </table>
   </div>
-
+</div>
 <script>
 let today = new Date();
 let selectedDate = new Date();
