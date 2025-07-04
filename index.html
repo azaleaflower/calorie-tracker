@@ -47,11 +47,14 @@
       border-collapse: collapse;
     }
     th, td {
-      width: 40px;
-      height: 40px;
+      width: 60px;
+      height: 60px;
       text-align: center;
       border: 1px solid #ffcce0;
       cursor: pointer;
+      font-size: 1.1em;
+      vertical-align: top;
+      position: relative;
     }
     th {
       background-color: #ffcce0;
@@ -59,6 +62,16 @@
     }
     td:hover {
       background-color: #ffccdd;
+    }
+    .dot {
+      width: 8px;
+      height: 8px;
+      background-color: #d6336c;
+      border-radius: 50%;
+      position: absolute;
+      bottom: 5px;
+      left: 50%;
+      transform: translateX(-50%);
     }
     .summary {
       margin: 20px auto;
@@ -90,59 +103,4 @@
 
   <div class="summary">
     <div class="summary-card" id="caloriesConsumed">Calories Consumed: 0</div>
-    <div class="summary-card" id="caloriesBurned">Calories Burned: 0</div>
-    <div class="summary-card" id="caloriesRemaining">Calories Remaining: 0</div>
-  </div>
-
-<script>
-let today = new Date();
-let selectedDate = new Date();
-
-function renderCalendar() {
-  const year = today.getFullYear();
-  const month = today.getMonth();
-
-  const firstDay = new Date(year, month, 1).getDay();
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-
-  const calendar = document.getElementById("calendar");
-  const monthYear = document.getElementById("monthYear");
-  monthYear.textContent = `${today.toLocaleString('default', { month: 'long' })} ${year}`;
-
-  let html = "<tr>";
-  const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  for (let d of daysOfWeek) {
-    html += `<th>${d}</th>`;
-  }
-  html += "</tr><tr>";
-
-  for (let i = 0; i < firstDay; i++) {
-    html += "<td></td>";
-  }
-
-  for (let day = 1; day <= daysInMonth; day++) {
-    if ((firstDay + day - 1) % 7 === 0 && day !== 1) {
-      html += "</tr><tr>";
-    }
-    html += `<td onclick="selectDate(${year},${month},${day})">${day}</td>`;
-  }
-
-  html += "</tr>";
-  calendar.innerHTML = html;
-}
-
-function changeMonth(direction) {
-  today.setMonth(today.getMonth() + direction);
-  renderCalendar();
-}
-
-function selectDate(y, m, d) {
-  selectedDate = new Date(y, m, d);
-  alert(`Selected ${selectedDate.toDateString()}`);
-  // later we’ll hook up day details here
-}
-
-renderCalendar();
-</script>
-</body>
-</html>
+    <div class="summary-card" id=
