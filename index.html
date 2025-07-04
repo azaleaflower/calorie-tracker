@@ -103,4 +103,66 @@
 
   <div class="summary">
     <div class="summary-card" id="caloriesConsumed">Calories Consumed: 0</div>
-    <div class="summary-card" id=
+    <div class="summary-card" id="caloriesBurned">Calories Burned: 0</div>
+    <div class="summary-card" id="caloriesRemaining">Calories Remaining: 0</div>
+  </div>
+
+<script>
+let today = new Date();
+let selectedDate = new Date();
+
+function renderCalendar() {
+  const year = today.getFullYear();
+  const month = today.getMonth();
+
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+  const calendar = document.getElementById("calendar");
+  const monthYear = document.getElementById("monthYear");
+  monthYear.textContent = `${today.toLocaleString('default', { month: 'long' })} ${year}`;
+
+  let html = "<tr>";
+  const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  for (let d of daysOfWeek) {
+    html += `<th>${d}</th>`;
+  }
+  html += "</tr><tr>";
+
+  for (let i = 0; i < firstDay; i++) {
+    html += "<td></td>";
+  }
+
+  const savedData = JSON.parse(localStorage.getItem("trackerData") || "{}");
+
+  for (let day = 1; day <= daysInMonth; day++) {
+    if ((firstDay + day - 1) % 7 === 0 && day !== 1) {
+      html += "</tr><tr>";
+    }
+    const dateKey = `${year}-${String(month+1).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
+    const hasData = savedData[dateKey];
+    html += `<td onclick="selectDate(${year},${month},${day})">
+      ${day}
+      ${hasData ? '<div class="dot"></div>' : ''}
+    </td>`;
+  }
+
+  html += "</tr>";
+  calendar.innerHTML = html;
+}
+
+function changeMonth(direction) {
+  today.setMonth(today.getMonth() + direction);
+  renderCalendar();
+}
+
+function selectDate(y, m, d) {
+  selectedDate = new Date(y, m, d);
+  alert(`Selected ${selectedDate.toDateString()}`);
+  // future hook for opening log details
+}
+
+renderCalendar();
+</script>
+</body>
+</html>
