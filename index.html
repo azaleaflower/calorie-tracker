@@ -157,22 +157,10 @@
       <h3>Meals</h3>
       <table>
         <tr><th>Meal</th><th>Calories</th></tr>
-        <tr>
-          <td>Breakfast</td>
-          <td><input id="breakfast" type="number" placeholder="Calories"/></td>
-        </tr>
-        <tr>
-          <td>Lunch</td>
-          <td><input id="lunch" type="number" placeholder="Calories"/></td>
-        </tr>
-        <tr>
-          <td>Dinner</td>
-          <td><input id="dinner" type="number" placeholder="Calories"/></td>
-        </tr>
-        <tr>
-          <td>Snacks</td>
-          <td><input id="snacks" type="number" placeholder="Calories"/></td>
-        </tr>
+        <tr><td>Breakfast</td><td><input id="breakfast" type="number"/></td></tr>
+        <tr><td>Lunch</td><td><input id="lunch" type="number"/></td></tr>
+        <tr><td>Dinner</td><td><input id="dinner" type="number"/></td></tr>
+        <tr><td>Snacks</td><td><input id="snacks" type="number"/></td></tr>
       </table>
       <button onclick="saveMeals()" style="margin-top:10px;">Save Meals</button>
     </div>
@@ -183,7 +171,7 @@
       <table>
         <tr><th>Type</th><th>Calories Burned</th></tr>
         <tr>
-          <td><input id="workoutType" placeholder="Running, Yoga, etc."/></td>
+          <td><input id="workoutType"/></td>
           <td><input id="workoutCalories" type="number"/></td>
         </tr>
       </table>
@@ -195,9 +183,7 @@
       <h3>Water Intake</h3>
       <table>
         <tr><th>Glasses of Water</th></tr>
-        <tr>
-          <td><input id="waterGlasses" type="number"/></td>
-        </tr>
+        <tr><td><input id="waterGlasses" type="number"/></td></tr>
       </table>
       <button onclick="saveWater()" style="margin-top:10px;">Save Water</button>
     </div>
@@ -207,22 +193,10 @@
       <h3>Measurements</h3>
       <table>
         <tr><th>Body Part</th><th>Inches</th></tr>
-        <tr>
-          <td>Waist</td>
-          <td><input id="waist" type="number" step="0.1"/></td>
-        </tr>
-        <tr>
-          <td>Hips</td>
-          <td><input id="hips" type="number" step="0.1"/></td>
-        </tr>
-        <tr>
-          <td>Arms</td>
-          <td><input id="arms" type="number" step="0.1"/></td>
-        </tr>
-        <tr>
-          <td>Thighs</td>
-          <td><input id="thighs" type="number" step="0.1"/></td>
-        </tr>
+        <tr><td>Waist</td><td><input id="waist" type="number" step="0.1"/></td></tr>
+        <tr><td>Hips</td><td><input id="hips" type="number" step="0.1"/></td></tr>
+        <tr><td>Arms</td><td><input id="arms" type="number" step="0.1"/></td></tr>
+        <tr><td>Thighs</td><td><input id="thighs" type="number" step="0.1"/></td></tr>
       </table>
       <button onclick="saveMeasurements()" style="margin-top:10px;">Save Measurements</button>
     </div>
@@ -296,26 +270,34 @@ function loadDayData() {
 function updateSummary() {
   loadDayData();
   const day = dailyData[selectedDateString];
-  document.getElementById("caloriesConsumed").innerText = "Calories Consumed: " + (
-    parseInt(day.meals?.breakfast || 0) +
-    parseInt(day.meals?.lunch || 0) +
-    parseInt(day.meals?.dinner || 0) +
-    parseInt(day.meals?.snacks || 0)
-  );
-  document.getElementById("caloriesBurned").innerText = "Calories Burned: " + (
-    parseInt(day.workout?.calories || 0)
-  );
   const consumed = parseInt(day.meals?.breakfast || 0) +
-    parseInt(day.meals?.lunch || 0) +
-    parseInt(day.meals?.dinner || 0) +
-    parseInt(day.meals?.snacks || 0);
+                   parseInt(day.meals?.lunch || 0) +
+                   parseInt(day.meals?.dinner || 0) +
+                   parseInt(day.meals?.snacks || 0);
   const burned = parseInt(day.workout?.calories || 0);
-document.getElementById("caloriesRemaining").innerText = "Calories Remaining: " + (1200 - consumed + burned);
+  document.getElementById("caloriesConsumed").innerText = "Calories Consumed: " + consumed;
+  document.getElementById("caloriesBurned").innerText = "Calories Burned: " + burned;
+  document.getElementById("caloriesRemaining").innerText = "Calories Remaining: " + (1200 - consumed + burned);
 }
 
 function selectDate(y,m,d) {
   selectedDate = new Date(y,m,d);
   selectedDateString = `${y}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+  loadDayData();
+
+  const data = dailyData[selectedDateString];
+  document.getElementById("breakfast").value = data.meals?.breakfast || "";
+  document.getElementById("lunch").value = data.meals?.lunch || "";
+  document.getElementById("dinner").value = data.meals?.dinner || "";
+  document.getElementById("snacks").value = data.meals?.snacks || "";
+  document.getElementById("workoutType").value = data.workout?.type || "";
+  document.getElementById("workoutCalories").value = data.workout?.calories || "";
+  document.getElementById("waterGlasses").value = data.water?.glasses || "";
+  document.getElementById("waist").value = data.measurements?.waist || "";
+  document.getElementById("hips").value = data.measurements?.hips || "";
+  document.getElementById("arms").value = data.measurements?.arms || "";
+  document.getElementById("thighs").value = data.measurements?.thighs || "";
+
   showTab('meals');
   updateSummary();
 }
