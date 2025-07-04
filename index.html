@@ -47,21 +47,15 @@
       border-collapse: collapse;
     }
     th, td {
-      width: 60px;
-      height: 60px;
-      text-align: center;
       border: 1px solid #ffcce0;
-      cursor: pointer;
-      font-size: 1.1em;
-      vertical-align: top;
-      position: relative;
+      padding: 8px;
     }
     th {
       background-color: #ffcce0;
       color: #a83f6a;
     }
-    td:hover {
-      background-color: #ffccdd;
+    td {
+      background-color: #fff0f5;
     }
     .dot {
       width: 8px;
@@ -107,7 +101,6 @@
     }
     .tabs-container table {
       width: 100%;
-      border: 1px solid #ffcce0;
       border-collapse: collapse;
       margin-top: 10px;
     }
@@ -202,19 +195,20 @@
     </div>
   </div>
 
-  <div class="history" style="max-width:90%; margin:20px auto;">
+  <div class="history" style="max-width:95%; margin:20px auto;">
     <h3 style="text-align:center;">📅 Daily Log History</h3>
-    <table id="historyTable" style="width:100%; border-collapse:collapse; background:#fff0f5;">
+    <table id="historyTable">
       <thead>
         <tr>
-          <th style="border:1px solid #ffcce0;">Date</th>
-          <th style="border:1px solid #ffcce0;">Breakfast</th>
-          <th style="border:1px solid #ffcce0;">Lunch</th>
-          <th style="border:1px solid #ffcce0;">Dinner</th>
-          <th style="border:1px solid #ffcce0;">Snacks</th>
-          <th style="border:1px solid #ffcce0;">Workout</th>
-          <th style="border:1px solid #ffcce0;">Water</th>
-          <th style="border:1px solid #ffcce0;">Measurements</th>
+          <th>Date</th>
+          <th>Breakfast</th>
+          <th>Lunch</th>
+          <th>Dinner</th>
+          <th>Snacks</th>
+          <th>Workout</th>
+          <th>Water</th>
+          <th>Measurements</th>
+          <th>Net Calories</th>
         </tr>
       </thead>
       <tbody id="historyBody"></tbody>
@@ -238,19 +232,13 @@ function renderCalendar() {
 
   let html = "<tr>";
   const daysOfWeek = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
-  for (let d of daysOfWeek) {
-    html += `<th>${d}</th>`;
-  }
+  for (let d of daysOfWeek) html += `<th>${d}</th>`;
   html += "</tr><tr>";
 
-  for (let i=0; i<firstDay; i++) {
-    html += "<td></td>";
-  }
+  for (let i=0; i<firstDay; i++) html += "<td></td>";
 
   for (let day=1; day<=daysInMonth; day++) {
-    if ((firstDay + day - 1) % 7 === 0 && day !== 1) {
-      html += "</tr><tr>";
-    }
+    if ((firstDay + day - 1) % 7 === 0 && day !== 1) html += "</tr><tr>";
     const dateKey = `${year}-${String(month+1).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
     const hasData = dailyData[dateKey];
     html += `<td onclick="selectDate(${year},${month},${day})">
@@ -301,7 +289,6 @@ function selectDate(y,m,d) {
   selectedDate = new Date(y,m,d);
   selectedDateString = `${y}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
   loadDayData();
-
   const data = dailyData[selectedDateString];
   document.getElementById("breakfast").value = data.meals?.breakfast || "";
   document.getElementById("lunch").value = data.meals?.lunch || "";
@@ -314,7 +301,6 @@ function selectDate(y,m,d) {
   document.getElementById("hips").value = data.measurements?.hips || "";
   document.getElementById("arms").value = data.measurements?.arms || "";
   document.getElementById("thighs").value = data.measurements?.thighs || "";
-
   showTab('meals');
   updateSummary();
 }
@@ -324,6 +310,12 @@ function updateHistoryTable() {
   tbody.innerHTML = "";
   for (const dateKey in dailyData) {
     const day = dailyData[dateKey];
+    const consumed = parseInt(day.meals?.breakfast || 0) +
+                     parseInt(day.meals?.lunch || 0) +
+                     parseInt(day.meals?.dinner || 0) +
+                     parseInt(day.meals?.snacks || 0);
+    const burned = parseInt(day.workout?.calories || 0);
+    const netCalories = consumed - burned;
     const measurements = `W:${day.measurements?.waist || "-"} H:${day.measurements?.hips || "-"} A:${day.measurements?.arms || "-"} T:${day.measurements?.thighs || "-"}`;
     const row = `
       <tr>
@@ -335,56 +327,32 @@ function updateHistoryTable() {
         <td>${day.workout?.type || "-"} (${day.workout?.calories || "0"})</td>
         <td>${day.water?.glasses || "0"}</td>
         <td>${measurements}</td>
+        <td>${netCalories}</td>
       </tr>
     `;
     tbody.insertAdjacentHTML("beforeend", row);
   }
 }
 
-function saveMeals() {
-  loadDayData();
-  dailyData[selectedDateString].meals = {
-    breakfast: document.getElementById("breakfast").value,
-    lunch: document.getElementById("lunch").value,
-    dinner: document.getElementById("dinner").value,
-    snacks: document.getElementById("snacks").value
-  };
-  saveDayData();
-  updateSummary();
-  alert("Meals saved!");
-}
-
-function saveWorkout() {
-  loadDayData();
-  dailyData[selectedDateString].workout = {
-    type: document.getElementById("workoutType").value,
-    calories: document.getElementById("workoutCalories").value
-  };
-  saveDayData();
-  updateSummary();
-  alert("Workout saved!");
-}
-
-function saveWater() {
-  loadDayData();
-  dailyData[selectedDateString].water = {
-    glasses: document.getElementById("waterGlasses").value
-  };
-  saveDayData();
-  alert("Water saved!");
-}
-
-function saveMeasurements() {
-  loadDayData();
-  dailyData[selectedDateString].measurements = {
-    waist: document.getElementById("waist").value,
-    hips: document.getElementById("hips").value,
-    arms: document.getElementById("arms").value,
-    thighs: document.getElementById("thighs").value
-  };
-  saveDayData();
-  alert("Measurements saved!");
-}
+function saveMeals() { loadDayData(); dailyData[selectedDateString].meals = {
+  breakfast: document.getElementById("breakfast").value,
+  lunch: document.getElementById("lunch").value,
+  dinner: document.getElementById("dinner").value,
+  snacks: document.getElementById("snacks").value
+}; saveDayData(); updateSummary(); alert("Meals saved!"); }
+function saveWorkout() { loadDayData(); dailyData[selectedDateString].workout = {
+  type: document.getElementById("workoutType").value,
+  calories: document.getElementById("workoutCalories").value
+}; saveDayData(); updateSummary(); alert("Workout saved!"); }
+function saveWater() { loadDayData(); dailyData[selectedDateString].water = {
+  glasses: document.getElementById("waterGlasses").value
+}; saveDayData(); alert("Water saved!"); }
+function saveMeasurements() { loadDayData(); dailyData[selectedDateString].measurements = {
+  waist: document.getElementById("waist").value,
+  hips: document.getElementById("hips").value,
+  arms: document.getElementById("arms").value,
+  thighs: document.getElementById("thighs").value
+}; saveDayData(); alert("Measurements saved!"); }
 
 renderCalendar();
 updateHistoryTable();
