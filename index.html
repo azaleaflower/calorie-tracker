@@ -92,6 +92,7 @@
 </head>
 <body>
   <header>GlowFit Tracker</header>
+
   <div class="calendar-container">
     <div class="month-nav">
       <button onclick="changeMonth(-1)">Previous</button>
@@ -159,7 +160,7 @@ function changeMonth(direction) {
 function selectDate(y, m, d) {
   selectedDate = new Date(y, m, d);
   alert(`Selected ${selectedDate.toDateString()}`);
-  // future hook for opening log details
+  // we’ll hook this up to show data next sprint
 }
 
 renderCalendar();
