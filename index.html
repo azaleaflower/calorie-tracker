@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>GlowFit Tracker</title>
+  <title>Azalea's Tracker</title>
   <style>
     body {
       font-family: "Helvetica", sans-serif;
@@ -17,7 +17,7 @@
       color: #a83f6a;
       text-align: center;
       padding: 15px;
-      font-size: 1.5em;
+      font-size: 1.8em;
       font-weight: bold;
     }
     .calendar-container {
@@ -29,7 +29,7 @@
     .month-nav {
       display: flex;
       justify-content: space-between;
-      width: 300px;
+      width: 320px;
       margin-bottom: 10px;
     }
     .month-nav button {
@@ -91,7 +91,11 @@
   </style>
 </head>
 <body>
-  <header>GlowFit Tracker</header>
+  <header>Azalea's Tracker</header>
+
+  <div style="text-align:center; margin-top:10px;">
+    <img src="raccoon.png" alt="Azalea's raccoon friend" style="width:120px;" />
+  </div>
 
   <div class="calendar-container">
     <div class="month-nav">
@@ -160,7 +164,7 @@ function changeMonth(direction) {
 function selectDate(y, m, d) {
   selectedDate = new Date(y, m, d);
   alert(`Selected ${selectedDate.toDateString()}`);
-  // we’ll hook this up to show data next sprint
+  // we’ll hook this up in Sprint 2
 }
 
 renderCalendar();
