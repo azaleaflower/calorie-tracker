@@ -3,237 +3,146 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Pink Personal Calorie Tracker</title>
+  <title>GlowFit Tracker</title>
   <style>
     body {
       font-family: "Helvetica", sans-serif;
-      background-color: #ffe4ec;
-      color: #333;
+      background-color: #ffe6f0;
+      color: #4a4a4a;
       margin: 0;
-      padding: 20px;
+      padding: 0;
     }
-    h1, h2 {
-      color: #d6336c;
-    }
-    nav a {
-      margin-right: 15px;
-      color: #d6336c;
-      text-decoration: none;
+    header {
+      background-color: #ffcce0;
+      color: #a83f6a;
+      text-align: center;
+      padding: 15px;
+      font-size: 1.5em;
       font-weight: bold;
     }
-    nav a:hover {
-      text-decoration: underline;
+    .calendar-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 20px;
     }
-    .hidden {
-      display: none;
+    .month-nav {
+      display: flex;
+      justify-content: space-between;
+      width: 300px;
+      margin-bottom: 10px;
     }
-    .calendar {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 4px;
-      margin-top: 10px;
-    }
-    .calendar button {
-      padding: 10px;
-      border: 1px solid #d6336c;
-      background-color: #ffc2d1;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    .calendar button:hover {
-      background-color: #ffa6c9;
-    }
-    section {
-      margin-top: 20px;
-      background-color: #fff0f5;
-      padding: 15px;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-    label {
-      display: block;
-      margin-top: 8px;
-    }
-    input, textarea, select {
-      margin-top: 5px;
-      width: 100%;
-      padding: 8px;
-      border: 1px solid #d6336c;
-      border-radius: 5px;
-    }
-    button {
-      background-color: #d6336c;
-      color: white;
-      padding: 10px 15px;
+    .month-nav button {
+      background-color: #ff99c8;
       border: none;
-      border-radius: 5px;
-      margin-top: 10px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      color: white;
       cursor: pointer;
     }
-    button:hover {
-      background-color: #b72b5d;
+    .month-nav button:hover {
+      background-color: #ff7aa2;
+    }
+    table {
+      border-collapse: collapse;
+    }
+    th, td {
+      width: 40px;
+      height: 40px;
+      text-align: center;
+      border: 1px solid #ffcce0;
+      cursor: pointer;
+    }
+    th {
+      background-color: #ffcce0;
+      color: #a83f6a;
+    }
+    td:hover {
+      background-color: #ffccdd;
+    }
+    .summary {
+      margin: 20px auto;
+      max-width: 500px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .summary-card {
+      background-color: #fff0f5;
+      border: 1px solid #ffcce0;
+      border-radius: 10px;
+      padding: 10px;
+      text-align: center;
+      font-size: 1.2em;
     }
   </style>
 </head>
 <body>
-  <h1>My Pink Calorie Tracker</h1>
-  <nav>
-    <a href="#" onclick="showPage('log')">Daily Log</a>
-    <a href="#" onclick="showPage('calendar')">Calendar</a>
-    <a href="#" onclick="showPage('measurements')">Measurements</a>
-    <a href="#" onclick="showPage('notes')">Notes</a>
-  </nav>
-<section id="logPage">
-  <h2>Daily Log</h2>
-  <div>
-    <h3>Meals</h3>
-    <label>Breakfast
-      <input id="breakfast" placeholder="What did you eat?" />
-    </label>
-    <label>Lunch
-      <input id="lunch" placeholder="What did you eat?" />
-    </label>
-    <label>Dinner
-      <input id="dinner" placeholder="What did you eat?" />
-    </label>
-    <label>Snack
-      <input id="snack" placeholder="What did you eat?" />
-    </label>
+  <header>GlowFit Tracker</header>
+  <div class="calendar-container">
+    <div class="month-nav">
+      <button onclick="changeMonth(-1)">Previous</button>
+      <div id="monthYear"></div>
+      <button onclick="changeMonth(1)">Next</button>
+    </div>
+    <table id="calendar"></table>
   </div>
-  <div>
-    <h3>Water Tracker</h3>
-    <label>Glasses of water
-      <input id="water" type="number" min="0" />
-    </label>
+
+  <div class="summary">
+    <div class="summary-card" id="caloriesConsumed">Calories Consumed: 0</div>
+    <div class="summary-card" id="caloriesBurned">Calories Burned: 0</div>
+    <div class="summary-card" id="caloriesRemaining">Calories Remaining: 0</div>
   </div>
-  <div>
-    <h3>Mood Tracker</h3>
-    <select id="mood">
-      <option value="">--choose mood--</option>
-      <option>😊 Happy</option>
-      <option>😐 Neutral</option>
-      <option>😔 Sad</option>
-      <option>😠 Angry</option>
-      <option>😴 Tired</option>
-    </select>
-  </div>
-  <div>
-    <h3>Notes</h3>
-    <textarea id="notes" rows="4" placeholder="Write anything here..."></textarea>
-  </div>
-  <button onclick="saveLog()">Save Today</button>
-</section>
-<section id="measurementsPage" class="hidden">
-  <h2>Daily Measurements</h2>
-  <label>Waist (in)
-    <input id="waist" type="number" step="0.1" />
-  </label>
-  <label>Hips (in)
-    <input id="hips" type="number" step="0.1" />
-  </label>
-  <label>Arms (in)
-    <input id="arms" type="number" step="0.1" />
-  </label>
-  <label>Thighs (in)
-    <input id="thighs" type="number" step="0.1" />
-  </label>
-  <button onclick="saveMeasurements()">Save Measurements</button>
-</section>
-<section id="calendarPage" class="hidden">
-  <h2>Monthly Calendar</h2>
-  <div class="calendar" id="calendar"></div>
-</section>
+
 <script>
-  let currentDay = new Date().toISOString().split('T')[0];
-  let dailyData = {};
+let today = new Date();
+let selectedDate = new Date();
 
-  function showPage(page) {
-    document.querySelectorAll("section").forEach(sec => sec.classList.add("hidden"));
-    document.getElementById(page + "Page").classList.remove("hidden");
+function renderCalendar() {
+  const year = today.getFullYear();
+  const month = today.getMonth();
+
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+  const calendar = document.getElementById("calendar");
+  const monthYear = document.getElementById("monthYear");
+  monthYear.textContent = `${today.toLocaleString('default', { month: 'long' })} ${year}`;
+
+  let html = "<tr>";
+  const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  for (let d of daysOfWeek) {
+    html += `<th>${d}</th>`;
+  }
+  html += "</tr><tr>";
+
+  for (let i = 0; i < firstDay; i++) {
+    html += "<td></td>";
   }
 
-  function saveLog() {
-    loadDayData();
-    dailyData[currentDay].meals = {
-      breakfast: document.getElementById("breakfast").value,
-      lunch: document.getElementById("lunch").value,
-      dinner: document.getElementById("dinner").value,
-      snack: document.getElementById("snack").value,
-    };
-    dailyData[currentDay].water = document.getElementById("water").value;
-    dailyData[currentDay].mood = document.getElementById("mood").value;
-    dailyData[currentDay].notes = document.getElementById("notes").value;
-    saveDayData();
-    alert("Saved!");
-  }
-
-  function saveMeasurements() {
-    loadDayData();
-    dailyData[currentDay].measurements = {
-      waist: document.getElementById("waist").value,
-      hips: document.getElementById("hips").value,
-      arms: document.getElementById("arms").value,
-      thighs: document.getElementById("thighs").value
-    };
-    saveDayData();
-    alert("Measurements saved!");
-  }
-
-  function loadDayData() {
-    dailyData = JSON.parse(localStorage.getItem("trackerData") || "{}");
-    if (!dailyData[currentDay]) {
-      dailyData[currentDay] = { meals: {}, measurements: {}, water: 0, mood: "", notes: "" };
+  for (let day = 1; day <= daysInMonth; day++) {
+    if ((firstDay + day - 1) % 7 === 0 && day !== 1) {
+      html += "</tr><tr>";
     }
+    html += `<td onclick="selectDate(${year},${month},${day})">${day}</td>`;
   }
 
-  function saveDayData() {
-    localStorage.setItem("trackerData", JSON.stringify(dailyData));
-  }
+  html += "</tr>";
+  calendar.innerHTML = html;
+}
 
-  function buildCalendar() {
-    const cal = document.getElementById("calendar");
-    const date = new Date();
-    date.setDate(1);
-    const month = date.getMonth();
-    const year = date.getFullYear();
-    const days = new Date(year, month + 1, 0).getDate();
-    cal.innerHTML = `
-      <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
-    `;
-    const startDay = new Date(year, month, 1).getDay();
-    for(let i=0; i<startDay; i++){
-      cal.innerHTML += "<div></div>";
-    }
-    for(let d=1; d<=days; d++){
-      const btn = document.createElement("button");
-      btn.textContent = d;
-      btn.onclick = () => {
-        currentDay = `${year}-${String(month+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
-        alert(`Switched to ${currentDay}`);
-        showPage("log");
-        loadDayData();
-        populateLog();
-      };
-      cal.appendChild(btn);
-    }
-  }
+function changeMonth(direction) {
+  today.setMonth(today.getMonth() + direction);
+  renderCalendar();
+}
 
-  function populateLog() {
-    loadDayData();
-    document.getElementById("breakfast").value = dailyData[currentDay].meals.breakfast || "";
-    document.getElementById("lunch").value = dailyData[currentDay].meals.lunch || "";
-    document.getElementById("dinner").value = dailyData[currentDay].meals.dinner || "";
-    document.getElementById("snack").value = dailyData[currentDay].meals.snack || "";
-    document.getElementById("water").value = dailyData[currentDay].water || "";
-    document.getElementById("mood").value = dailyData[currentDay].mood || "";
-    document.getElementById("notes").value = dailyData[currentDay].notes || "";
-    document.getElementById("waist").value = dailyData[currentDay].measurements.waist || "";
-    document.getElementById("hips").value = dailyData[currentDay].measurements.hips || "";
-    document.getElementById("arms").value = dailyData[currentDay].measurements.arms || "";
-    document.getElementById("thighs").value = dailyData[currentDay].measurements.thighs || "";
-  }
+function selectDate(y, m, d) {
+  selectedDate = new Date(y, m, d);
+  alert(`Selected ${selectedDate.toDateString()}`);
+  // later we’ll hook up day details here
+}
 
-  buildCalendar();
-  loadDayData();
-  populateLog();
+renderCalendar();
 </script>
+</body>
+</html>
