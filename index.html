@@ -139,3 +139,101 @@
   </label>
   <button onclick="saveMeasurements()">Save Measurements</button>
 </section>
+<section id="calendarPage" class="hidden">
+  <h2>Monthly Calendar</h2>
+  <div class="calendar" id="calendar"></div>
+</section>
+<script>
+  let currentDay = new Date().toISOString().split('T')[0];
+  let dailyData = {};
+
+  function showPage(page) {
+    document.querySelectorAll("section").forEach(sec => sec.classList.add("hidden"));
+    document.getElementById(page + "Page").classList.remove("hidden");
+  }
+
+  function saveLog() {
+    loadDayData();
+    dailyData[currentDay].meals = {
+      breakfast: document.getElementById("breakfast").value,
+      lunch: document.getElementById("lunch").value,
+      dinner: document.getElementById("dinner").value,
+      snack: document.getElementById("snack").value,
+    };
+    dailyData[currentDay].water = document.getElementById("water").value;
+    dailyData[currentDay].mood = document.getElementById("mood").value;
+    dailyData[currentDay].notes = document.getElementById("notes").value;
+    saveDayData();
+    alert("Saved!");
+  }
+
+  function saveMeasurements() {
+    loadDayData();
+    dailyData[currentDay].measurements = {
+      waist: document.getElementById("waist").value,
+      hips: document.getElementById("hips").value,
+      arms: document.getElementById("arms").value,
+      thighs: document.getElementById("thighs").value
+    };
+    saveDayData();
+    alert("Measurements saved!");
+  }
+
+  function loadDayData() {
+    dailyData = JSON.parse(localStorage.getItem("trackerData") || "{}");
+    if (!dailyData[currentDay]) {
+      dailyData[currentDay] = { meals: {}, measurements: {}, water: 0, mood: "", notes: "" };
+    }
+  }
+
+  function saveDayData() {
+    localStorage.setItem("trackerData", JSON.stringify(dailyData));
+  }
+
+  function buildCalendar() {
+    const cal = document.getElementById("calendar");
+    const date = new Date();
+    date.setDate(1);
+    const month = date.getMonth();
+    const year = date.getFullYear();
+    const days = new Date(year, month + 1, 0).getDate();
+    cal.innerHTML = `
+      <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+    `;
+    const startDay = new Date(year, month, 1).getDay();
+    for(let i=0; i<startDay; i++){
+      cal.innerHTML += "<div></div>";
+    }
+    for(let d=1; d<=days; d++){
+      const btn = document.createElement("button");
+      btn.textContent = d;
+      btn.onclick = () => {
+        currentDay = `${year}-${String(month+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+        alert(`Switched to ${currentDay}`);
+        showPage("log");
+        loadDayData();
+        populateLog();
+      };
+      cal.appendChild(btn);
+    }
+  }
+
+  function populateLog() {
+    loadDayData();
+    document.getElementById("breakfast").value = dailyData[currentDay].meals.breakfast || "";
+    document.getElementById("lunch").value = dailyData[currentDay].meals.lunch || "";
+    document.getElementById("dinner").value = dailyData[currentDay].meals.dinner || "";
+    document.getElementById("snack").value = dailyData[currentDay].meals.snack || "";
+    document.getElementById("water").value = dailyData[currentDay].water || "";
+    document.getElementById("mood").value = dailyData[currentDay].mood || "";
+    document.getElementById("notes").value = dailyData[currentDay].notes || "";
+    document.getElementById("waist").value = dailyData[currentDay].measurements.waist || "";
+    document.getElementById("hips").value = dailyData[currentDay].measurements.hips || "";
+    document.getElementById("arms").value = dailyData[currentDay].measurements.arms || "";
+    document.getElementById("thighs").value = dailyData[currentDay].measurements.thighs || "";
+  }
+
+  buildCalendar();
+  loadDayData();
+  populateLog();
+</script>
