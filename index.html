@@ -56,6 +56,15 @@
     }
     td {
       background-color: #fff0f5;
+      position: relative;
+      width: 60px;
+      height: 60px;
+      text-align: center;
+      vertical-align: top;
+      cursor: pointer;
+    }
+    td:hover {
+      background-color: #ffccdd;
     }
     .dot {
       width: 8px;
@@ -263,6 +272,7 @@ function showTab(name) {
 function saveDayData() {
   localStorage.setItem("trackerData", JSON.stringify(dailyData));
   updateHistoryTable();
+  renderCalendar(); // redraw dots
 }
 
 function loadDayData() {
