@@ -83,3 +83,43 @@
     <a href="#" onclick="showPage('measurements')">Measurements</a>
     <a href="#" onclick="showPage('notes')">Notes</a>
   </nav>
+<section id="logPage">
+  <h2>Daily Log</h2>
+  <div>
+    <h3>Meals</h3>
+    <label>Breakfast
+      <input id="breakfast" placeholder="What did you eat?" />
+    </label>
+    <label>Lunch
+      <input id="lunch" placeholder="What did you eat?" />
+    </label>
+    <label>Dinner
+      <input id="dinner" placeholder="What did you eat?" />
+    </label>
+    <label>Snack
+      <input id="snack" placeholder="What did you eat?" />
+    </label>
+  </div>
+  <div>
+    <h3>Water Tracker</h3>
+    <label>Glasses of water
+      <input id="water" type="number" min="0" />
+    </label>
+  </div>
+  <div>
+    <h3>Mood Tracker</h3>
+    <select id="mood">
+      <option value="">--choose mood--</option>
+      <option>😊 Happy</option>
+      <option>😐 Neutral</option>
+      <option>😔 Sad</option>
+      <option>😠 Angry</option>
+      <option>😴 Tired</option>
+    </select>
+  </div>
+  <div>
+    <h3>Notes</h3>
+    <textarea id="notes" rows="4" placeholder="Write anything here..."></textarea>
+  </div>
+  <button onclick="saveLog()">Save Today</button>
+</section>
