@@ -3,165 +3,83 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Personal Calorie Tracker</title>
+  <title>Pink Personal Calorie Tracker</title>
   <style>
-    body { font-family: sans-serif; padding: 20px; }
-    nav a { margin-right: 10px; }
-    .hidden { display: none; }
-    table, th, td { border: 1px solid #ccc; border-collapse: collapse; padding: 5px; }
-    .calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-top: 10px; }
-    .calendar button { padding: 10px; }
+    body {
+      font-family: "Helvetica", sans-serif;
+      background-color: #ffe4ec;
+      color: #333;
+      margin: 0;
+      padding: 20px;
+    }
+    h1, h2 {
+      color: #d6336c;
+    }
+    nav a {
+      margin-right: 15px;
+      color: #d6336c;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    nav a:hover {
+      text-decoration: underline;
+    }
+    .hidden {
+      display: none;
+    }
+    .calendar {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+      margin-top: 10px;
+    }
+    .calendar button {
+      padding: 10px;
+      border: 1px solid #d6336c;
+      background-color: #ffc2d1;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .calendar button:hover {
+      background-color: #ffa6c9;
+    }
+    section {
+      margin-top: 20px;
+      background-color: #fff0f5;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    label {
+      display: block;
+      margin-top: 8px;
+    }
+    input, textarea, select {
+      margin-top: 5px;
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #d6336c;
+      border-radius: 5px;
+    }
+    button {
+      background-color: #d6336c;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #b72b5d;
+    }
   </style>
 </head>
 <body>
-  <h1>Personal Calorie Tracker</h1>
+  <h1>My Pink Calorie Tracker</h1>
   <nav>
-    <a href="#" onclick="showPage('log')">Food/Exercise Log</a>
-    <a href="#" onclick="showPage('measurements')">Measurements</a>
+    <a href="#" onclick="showPage('log')">Daily Log</a>
     <a href="#" onclick="showPage('calendar')">Calendar</a>
-    <a href="#" onclick="showPage('calculator')">Calculator</a>
+    <a href="#" onclick="showPage('measurements')">Measurements</a>
+    <a href="#" onclick="showPage('notes')">Notes</a>
   </nav>
-
-  <!-- Food/Exercise Log -->
-  <section id="logPage">
-    <h2>Daily Log</h2>
-    <div>
-      <h3>Food Log</h3>
-      <input id="foodName" placeholder="Food name" />
-      <input id="foodCalories" type="number" placeholder="Calories" />
-      <button onclick="addFood()">Add Food</button>
-      <ul id="foodList"></ul>
-    </div>
-    <div>
-      <h3>Exercise Log</h3>
-      <input id="exerciseName" placeholder="Exercise name" />
-      <input id="exerciseCalories" type="number" placeholder="Calories burned" />
-      <button onclick="addExercise()">Add Exercise</button>
-      <ul id="exerciseList"></ul>
-    </div>
-    <p><strong>Calories left today:</strong> <span id="remainingCalories">2000</span></p>
-  </section>
-
-  <!-- Measurements -->
-  <section id="measurementsPage" class="hidden">
-    <h2>Measurements</h2>
-    <input id="waist" placeholder="Waist (in)" />
-    <input id="hips" placeholder="Hips (in)" />
-    <input id="arms" placeholder="Arms (in)" />
-    <input id="thighs" placeholder="Thighs (in)" />
-    <button onclick="saveMeasurements()">Save Measurements</button>
-    <div id="measurementsHistory"></div>
-  </section>
-
-  <!-- Calendar -->
-  <section id="calendarPage" class="hidden">
-    <h2>Calendar</h2>
-    <div class="calendar" id="calendar"></div>
-  </section>
-
-  <!-- Calculator -->
-  <section id="calculatorPage" class="hidden">
-    <h2>Simple Calculator</h2>
-    <input id="calcInput" placeholder="e.g. 4+5*2" />
-    <button onclick="runCalculator()">Calculate</button>
-    <p id="calcResult"></p>
-  </section>
-
-<script>
-  const today = new Date().toISOString().split('T')[0];
-  let dailyData = JSON.parse(localStorage.getItem(today)) || {food:[],exercise:[],measurements:{},totalCalories:2000};
-
-  function saveData() {
-    localStorage.setItem(today, JSON.stringify(dailyData));
-  }
-
-  function addFood() {
-    const name = document.getElementById("foodName").value;
-    const cal = Number(document.getElementById("foodCalories").value);
-    dailyData.food.push({name,cal});
-    saveData();
-    updateLog();
-  }
-
-  function addExercise() {
-    const name = document.getElementById("exerciseName").value;
-    const cal = Number(document.getElementById("exerciseCalories").value);
-    dailyData.exercise.push({name,cal});
-    saveData();
-    updateLog();
-  }
-
-  function saveMeasurements() {
-    dailyData.measurements = {
-      waist: document.getElementById("waist").value,
-      hips: document.getElementById("hips").value,
-      arms: document.getElementById("arms").value,
-      thighs: document.getElementById("thighs").value
-    };
-    saveData();
-    alert("Measurements saved!");
-    updateMeasurements();
-  }
-
-  function updateLog() {
-    document.getElementById("foodList").innerHTML = dailyData.food.map(f=>`<li>${f.name} - ${f.cal} cal</li>`).join('');
-    document.getElementById("exerciseList").innerHTML = dailyData.exercise.map(e=>`<li>${e.name} - ${e.cal} cal burned</li>`).join('');
-    const caloriesIn = dailyData.food.reduce((sum,f)=>sum+f.cal,0);
-    const caloriesOut = dailyData.exercise.reduce((sum,e)=>sum+e.cal,0);
-    document.getElementById("remainingCalories").textContent = dailyData.totalCalories - caloriesIn + caloriesOut;
-  }
-
-  function updateMeasurements() {
-    const m = dailyData.measurements;
-    document.getElementById("measurementsHistory").innerHTML = `
-      Waist: ${m.waist || '-'} in<br>
-      Hips: ${m.hips || '-'} in<br>
-      Arms: ${m.arms || '-'} in<br>
-      Thighs: ${m.thighs || '-'} in
-    `;
-  }
-
-  function showPage(page) {
-    document.getElementById("logPage").classList.add("hidden");
-    document.getElementById("measurementsPage").classList.add("hidden");
-    document.getElementById("calendarPage").classList.add("hidden");
-    document.getElementById("calculatorPage").classList.add("hidden");
-    document.getElementById(page + "Page").classList.remove("hidden");
-  }
-
-  function runCalculator() {
-    try {
-      const expr = document.getElementById("calcInput").value;
-      const res = eval(expr);
-      document.getElementById("calcResult").textContent = res;
-    } catch {
-      document.getElementById("calcResult").textContent = "Invalid expression";
-    }
-  }
-
-  function buildCalendar() {
-    const cal = document.getElementById("calendar");
-    const date = new Date();
-    date.setDate(1);
-    const month = date.getMonth();
-    const year = date.getFullYear();
-    const days = new Date(year, month + 1, 0).getDate();
-    cal.innerHTML = '';
-    for(let i=1; i<=days; i++){
-      const btn = document.createElement("button");
-      btn.textContent = i;
-      btn.onclick = () => {
-        const dayStr = `${year}-${String(month+1).padStart(2,'0')}-${String(i).padStart(2,'0')}`;
-        alert(`Switching to ${dayStr}. In the future we can load that day's data!`);
-        // here you could extend to actually switch days
-      };
-      cal.appendChild(btn);
-    }
-  }
-
-  buildCalendar();
-  updateLog();
-  updateMeasurements();
-</script>
-</body>
-</html>
