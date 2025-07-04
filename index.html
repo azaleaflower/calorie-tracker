@@ -171,3 +171,42 @@ renderCalendar();
 </script>
 </body>
 </html>
+<div class="tabs-container" style="max-width:500px; margin:20px auto;">
+  <div style="display:flex; justify-content:space-around; margin-bottom:10px;">
+    <button onclick="showTab('meals')">Meals</button>
+    <button onclick="showTab('workouts')">Workouts</button>
+    <button onclick="showTab('water')">Water</button>
+    <button onclick="showTab('measurements')">Measurements</button>
+  </div>
+
+  <div id="mealsTab" class="tab-section">
+    <h3>Meals</h3>
+    <label>Breakfast: <input id="breakfast" /></label><br/>
+    <label>Lunch: <input id="lunch" /></label><br/>
+    <label>Dinner: <input id="dinner" /></label><br/>
+    <label>Snacks: <input id="snacks" /></label><br/>
+    <button onclick="saveMeals()">Save Meals</button>
+  </div>
+
+  <div id="workoutsTab" class="tab-section" style="display:none;">
+    <h3>Workouts</h3>
+    <label>Type: <input id="workoutType" /></label><br/>
+    <label>Calories Burned: <input id="workoutCalories" type="number" /></label><br/>
+    <button onclick="saveWorkout()">Save Workout</button>
+  </div>
+
+  <div id="waterTab" class="tab-section" style="display:none;">
+    <h3>Water Intake</h3>
+    <label>Glasses: <input id="waterGlasses" type="number" /></label><br/>
+    <button onclick="saveWater()">Save Water</button>
+  </div>
+
+  <div id="measurementsTab" class="tab-section" style="display:none;">
+    <h3>Measurements</h3>
+    <label>Waist (in): <input id="waist" type="number" step="0.1" /></label><br/>
+    <label>Hips (in): <input id="hips" type="number" step="0.1" /></label><br/>
+    <label>Arms (in): <input id="arms" type="number" step="0.1" /></label><br/>
+    <label>Thighs (in): <input id="thighs" type="number" step="0.1" /></label><br/>
+    <button onclick="saveMeasurements()">Save Measurements</button>
+  </div>
+</div>
