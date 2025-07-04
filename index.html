@@ -310,7 +310,7 @@ function updateSummary() {
     parseInt(day.meals?.dinner || 0) +
     parseInt(day.meals?.snacks || 0);
   const burned = parseInt(day.workout?.calories || 0);
-  document.getElementById("caloriesRemaining").innerText = "Calories Remaining: " + (2000 - consumed + burned);
+document.getElementById("caloriesRemaining").innerText = "Calories Remaining: " + (1200 - consumed + burned);
 }
 
 function selectDate(y,m,d) {
