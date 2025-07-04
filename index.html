@@ -88,6 +88,23 @@
       text-align: center;
       font-size: 1.2em;
     }
+    .tab-section {
+      background-color: #fff0f5;
+      border-radius: 10px;
+      padding: 10px;
+      margin-top: 10px;
+    }
+    .tabs-container button {
+      background-color: #ff99c8;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      color: white;
+      cursor: pointer;
+    }
+    .tabs-container button:hover {
+      background-color: #ff7aa2;
+    }
   </style>
 </head>
 <body>
@@ -112,14 +129,99 @@
     <div class="summary-card" id="caloriesRemaining">Calories Remaining: 0</div>
   </div>
 
+  <div class="tabs-container" style="max-width:600px; margin:20px auto;">
+    <div style="display:flex; justify-content:space-around; margin-bottom:15px;">
+      <button onclick="showTab('meals')">Meals</button>
+      <button onclick="showTab('workouts')">Workouts</button>
+      <button onclick="showTab('water')">Water</button>
+      <button onclick="showTab('measurements')">Measurements</button>
+    </div>
+
+    <!-- Meals Tab -->
+    <div id="mealsTab" class="tab-section">
+      <h3>Meals</h3>
+      <table style="width:100%; border-collapse:collapse;">
+        <tr>
+          <td>Breakfast</td>
+          <td><input id="breakfast" placeholder="Calories" type="number" /></td>
+        </tr>
+        <tr>
+          <td>Lunch</td>
+          <td><input id="lunch" placeholder="Calories" type="number" /></td>
+        </tr>
+        <tr>
+          <td>Dinner</td>
+          <td><input id="dinner" placeholder="Calories" type="number" /></td>
+        </tr>
+        <tr>
+          <td>Snacks</td>
+          <td><input id="snacks" placeholder="Calories" type="number" /></td>
+        </tr>
+      </table>
+      <button onclick="saveMeals()" style="margin-top:10px;">Save Meals</button>
+    </div>
+
+    <!-- Workouts Tab -->
+    <div id="workoutsTab" class="tab-section" style="display:none;">
+      <h3>Workouts</h3>
+      <table style="width:100%; border-collapse:collapse;">
+        <tr>
+          <td>Type</td>
+          <td><input id="workoutType" placeholder="Running, Yoga, etc." /></td>
+        </tr>
+        <tr>
+          <td>Calories Burned</td>
+          <td><input id="workoutCalories" type="number" /></td>
+        </tr>
+      </table>
+      <button onclick="saveWorkout()" style="margin-top:10px;">Save Workout</button>
+    </div>
+
+    <!-- Water Tab -->
+    <div id="waterTab" class="tab-section" style="display:none;">
+      <h3>Water Intake</h3>
+      <table style="width:100%; border-collapse:collapse;">
+        <tr>
+          <td>Glasses</td>
+          <td><input id="waterGlasses" type="number" /></td>
+        </tr>
+      </table>
+      <button onclick="saveWater()" style="margin-top:10px;">Save Water</button>
+    </div>
+
+    <!-- Measurements Tab -->
+    <div id="measurementsTab" class="tab-section" style="display:none;">
+      <h3>Measurements</h3>
+      <table style="width:100%; border-collapse:collapse;">
+        <tr>
+          <td>Waist (in)</td>
+          <td><input id="waist" type="number" step="0.1" /></td>
+        </tr>
+        <tr>
+          <td>Hips (in)</td>
+          <td><input id="hips" type="number" step="0.1" /></td>
+        </tr>
+        <tr>
+          <td>Arms (in)</td>
+          <td><input id="arms" type="number" step="0.1" /></td>
+        </tr>
+        <tr>
+          <td>Thighs (in)</td>
+          <td><input id="thighs" type="number" step="0.1" /></td>
+        </tr>
+      </table>
+      <button onclick="saveMeasurements()" style="margin-top:10px;">Save Measurements</button>
+    </div>
+  </div>
+
 <script>
 let today = new Date();
 let selectedDate = new Date();
+let selectedDateString = "";
 
 function renderCalendar() {
   const year = today.getFullYear();
   const month = today.getMonth();
-
   const firstDay = new Date(year, month, 1).getDay();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
 
@@ -128,19 +230,19 @@ function renderCalendar() {
   monthYear.textContent = `${today.toLocaleString('default', { month: 'long' })} ${year}`;
 
   let html = "<tr>";
-  const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const daysOfWeek = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
   for (let d of daysOfWeek) {
     html += `<th>${d}</th>`;
   }
   html += "</tr><tr>";
 
-  for (let i = 0; i < firstDay; i++) {
+  for (let i=0; i<firstDay; i++) {
     html += "<td></td>";
   }
 
   const savedData = JSON.parse(localStorage.getItem("trackerData") || "{}");
 
-  for (let day = 1; day <= daysInMonth; day++) {
+  for (let day=1; day<=daysInMonth; day++) {
     if ((firstDay + day - 1) % 7 === 0 && day !== 1) {
       html += "</tr><tr>";
     }
@@ -151,7 +253,6 @@ function renderCalendar() {
       ${hasData ? '<div class="dot"></div>' : ''}
     </td>`;
   }
-
   html += "</tr>";
   calendar.innerHTML = html;
 }
@@ -161,101 +262,9 @@ function changeMonth(direction) {
   renderCalendar();
 }
 
-function selectDate(y, m, d) {
-  selectedDate = new Date(y, m, d);
-  alert(`Selected ${selectedDate.toDateString()}`);
-  // we’ll hook this up in Sprint 2
-}
-
-renderCalendar();
-</script>
-</body>
-</html>
-<div class="tabs-container" style="max-width:500px; margin:20px auto;">
-  <div style="display:flex; justify-content:space-around; margin-bottom:10px;">
-    <button onclick="showTab('meals')">Meals</button>
-    <button onclick="showTab('workouts')">Workouts</button>
-    <button onclick="showTab('water')">Water</button>
-    <button onclick="showTab('measurements')">Measurements</button>
-  </div>
-
-  <div id="mealsTab" class="tab-section">
-    <h3>Meals</h3>
-    <label>Breakfast: <input id="breakfast" /></label><br/>
-    <label>Lunch: <input id="lunch" /></label><br/>
-    <label>Dinner: <input id="dinner" /></label><br/>
-    <label>Snacks: <input id="snacks" /></label><br/>
-    <button onclick="saveMeals()">Save Meals</button>
-  </div>
-
-  <div id="workoutsTab" class="tab-section" style="display:none;">
-    <h3>Workouts</h3>
-    <label>Type: <input id="workoutType" /></label><br/>
-    <label>Calories Burned: <input id="workoutCalories" type="number" /></label><br/>
-    <button onclick="saveWorkout()">Save Workout</button>
-  </div>
-
-  <div id="waterTab" class="tab-section" style="display:none;">
-    <h3>Water Intake</h3>
-    <label>Glasses: <input id="waterGlasses" type="number" /></label><br/>
-    <button onclick="saveWater()">Save Water</button>
-  </div>
-
-  <div id="measurementsTab" class="tab-section" style="display:none;">
-    <h3>Measurements</h3>
-    <label>Waist (in): <input id="waist" type="number" step="0.1" /></label><br/>
-    <label>Hips (in): <input id="hips" type="number" step="0.1" /></label><br/>
-    <label>Arms (in): <input id="arms" type="number" step="0.1" /></label><br/>
-    <label>Thighs (in): <input id="thighs" type="number" step="0.1" /></label><br/>
-    <button onclick="saveMeasurements()">Save Measurements</button>
-  </div>
-</div>
 function showTab(name) {
   document.querySelectorAll(".tab-section").forEach(tab => tab.style.display = "none");
   document.getElementById(name + "Tab").style.display = "block";
-}
-
-function saveMeals() {
-  loadDayData();
-  dailyData[selectedDateString].meals = {
-    breakfast: document.getElementById("breakfast").value,
-    lunch: document.getElementById("lunch").value,
-    dinner: document.getElementById("dinner").value,
-    snacks: document.getElementById("snacks").value,
-  };
-  saveDayData();
-  alert("Meals saved!");
-}
-
-function saveWorkout() {
-  loadDayData();
-  dailyData[selectedDateString].workout = {
-    type: document.getElementById("workoutType").value,
-    calories: document.getElementById("workoutCalories").value,
-  };
-  saveDayData();
-  alert("Workout saved!");
-}
-
-function saveWater() {
-  loadDayData();
-  dailyData[selectedDateString].water = {
-    glasses: document.getElementById("waterGlasses").value
-  };
-  saveDayData();
-  alert("Water saved!");
-}
-
-function saveMeasurements() {
-  loadDayData();
-  dailyData[selectedDateString].measurements = {
-    waist: document.getElementById("waist").value,
-    hips: document.getElementById("hips").value,
-    arms: document.getElementById("arms").value,
-    thighs: document.getElementById("thighs").value
-  };
-  saveDayData();
-  alert("Measurements saved!");
 }
 
 let dailyData = JSON.parse(localStorage.getItem("trackerData") || "{}");
@@ -291,9 +300,59 @@ function updateSummary() {
   document.getElementById("caloriesRemaining").innerText = "Calories Remaining: " + (2000 - consumed + burned);
 }
 
-function selectDate(y, m, d) {
-  selectedDate = new Date(y, m, d);
+function selectDate(y,m,d) {
+  selectedDate = new Date(y,m,d);
   selectedDateString = `${y}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
   showTab('meals');
   updateSummary();
 }
+
+function saveMeals() {
+  loadDayData();
+  dailyData[selectedDateString].meals = {
+    breakfast: document.getElementById("breakfast").value,
+    lunch: document.getElementById("lunch").value,
+    dinner: document.getElementById("dinner").value,
+    snacks: document.getElementById("snacks").value
+  };
+  saveDayData();
+  updateSummary();
+  alert("Meals saved!");
+}
+
+function saveWorkout() {
+  loadDayData();
+  dailyData[selectedDateString].workout = {
+    type: document.getElementById("workoutType").value,
+    calories: document.getElementById("workoutCalories").value
+  };
+  saveDayData();
+  updateSummary();
+  alert("Workout saved!");
+}
+
+function saveWater() {
+  loadDayData();
+  dailyData[selectedDateString].water = {
+    glasses: document.getElementById("waterGlasses").value
+  };
+  saveDayData();
+  alert("Water saved!");
+}
+
+function saveMeasurements() {
+  loadDayData();
+  dailyData[selectedDateString].measurements = {
+    waist: document.getElementById("waist").value,
+    hips: document.getElementById("hips").value,
+    arms: document.getElementById("arms").value,
+    thighs: document.getElementById("thighs").value
+  };
+  saveDayData();
+  alert("Measurements saved!");
+}
+
+renderCalendar();
+</script>
+</body>
+</html>
