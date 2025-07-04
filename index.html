@@ -210,3 +210,90 @@ renderCalendar();
     <button onclick="saveMeasurements()">Save Measurements</button>
   </div>
 </div>
+function showTab(name) {
+  document.querySelectorAll(".tab-section").forEach(tab => tab.style.display = "none");
+  document.getElementById(name + "Tab").style.display = "block";
+}
+
+function saveMeals() {
+  loadDayData();
+  dailyData[selectedDateString].meals = {
+    breakfast: document.getElementById("breakfast").value,
+    lunch: document.getElementById("lunch").value,
+    dinner: document.getElementById("dinner").value,
+    snacks: document.getElementById("snacks").value,
+  };
+  saveDayData();
+  alert("Meals saved!");
+}
+
+function saveWorkout() {
+  loadDayData();
+  dailyData[selectedDateString].workout = {
+    type: document.getElementById("workoutType").value,
+    calories: document.getElementById("workoutCalories").value,
+  };
+  saveDayData();
+  alert("Workout saved!");
+}
+
+function saveWater() {
+  loadDayData();
+  dailyData[selectedDateString].water = {
+    glasses: document.getElementById("waterGlasses").value
+  };
+  saveDayData();
+  alert("Water saved!");
+}
+
+function saveMeasurements() {
+  loadDayData();
+  dailyData[selectedDateString].measurements = {
+    waist: document.getElementById("waist").value,
+    hips: document.getElementById("hips").value,
+    arms: document.getElementById("arms").value,
+    thighs: document.getElementById("thighs").value
+  };
+  saveDayData();
+  alert("Measurements saved!");
+}
+
+let dailyData = JSON.parse(localStorage.getItem("trackerData") || "{}");
+
+function saveDayData() {
+  localStorage.setItem("trackerData", JSON.stringify(dailyData));
+}
+
+function loadDayData() {
+  dailyData = JSON.parse(localStorage.getItem("trackerData") || "{}");
+  if (!dailyData[selectedDateString]) {
+    dailyData[selectedDateString] = { meals:{}, workout:{}, water:{}, measurements:{} };
+  }
+}
+
+function updateSummary() {
+  loadDayData();
+  const day = dailyData[selectedDateString];
+  document.getElementById("caloriesConsumed").innerText = "Calories Consumed: " + (
+    parseInt(day.meals?.breakfast || 0) +
+    parseInt(day.meals?.lunch || 0) +
+    parseInt(day.meals?.dinner || 0) +
+    parseInt(day.meals?.snacks || 0)
+  );
+  document.getElementById("caloriesBurned").innerText = "Calories Burned: " + (
+    parseInt(day.workout?.calories || 0)
+  );
+  const consumed = parseInt(day.meals?.breakfast || 0) +
+    parseInt(day.meals?.lunch || 0) +
+    parseInt(day.meals?.dinner || 0) +
+    parseInt(day.meals?.snacks || 0);
+  const burned = parseInt(day.workout?.calories || 0);
+  document.getElementById("caloriesRemaining").innerText = "Calories Remaining: " + (2000 - consumed + burned);
+}
+
+function selectDate(y, m, d) {
+  selectedDate = new Date(y, m, d);
+  selectedDateString = `${y}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+  showTab('meals');
+  updateSummary();
+}
