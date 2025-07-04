@@ -334,4 +334,77 @@ function selectDate(y,m,d) {
   document.getElementById("dinner").value = data.meals?.dinner || "";
   document.getElementById("snacks").value = data.meals?.snacks || "";
   document.getElementById("workoutType").value = data.workout?.type || "";
-  document.getElementById("workoutCalories").value = data.workout?.calories |
+  document.getElementById("workoutCalories").value = data.workout?.calories || "";
+  document.getElementById("waterGlasses").value = data.water?.glasses || "";
+  document.getElementById("waist").value = data.measurements?.waist || "";
+  document.getElementById("hips").value = data.measurements?.hips || "";
+  document.getElementById("arms").value = data.measurements?.arms || "";
+  document.getElementById("thighs").value = data.measurements?.thighs || "";
+  showTab('meals');
+  updateSummary();
+}
+
+function updateHistoryTable() {
+  const tbody = document.getElementById("historyBody");
+  tbody.innerHTML = "";
+  for (const dateKey in dailyData) {
+    const day = dailyData[dateKey];
+    const consumed = parseInt(day.meals?.breakfast || 0) +
+                     parseInt(day.meals?.lunch || 0) +
+                     parseInt(day.meals?.dinner || 0) +
+                     parseInt(day.meals?.snacks || 0);
+    const burned = parseInt(day.workout?.calories || 0);
+    const netCalories = consumed - burned;
+    const measurements = `W:${day.measurements?.waist || "-"} H:${day.measurements?.hips || "-"} A:${day.measurements?.arms || "-"} T:${day.measurements?.thighs || "-"}`;
+    const row = `
+      <tr>
+        <td>${dateKey}</td>
+        <td>${day.meals?.breakfast || "-"}</td>
+        <td>${day.meals?.lunch || "-"}</td>
+        <td>${day.meals?.dinner || "-"}</td>
+        <td>${day.meals?.snacks || "-"}</td>
+        <td>${day.workout?.type || "-"} (${day.workout?.calories || "0"})</td>
+        <td>${day.water?.glasses || "0"}</td>
+        <td>${measurements}</td>
+        <td>${netCalories}</td>
+        <td><button class="delete-btn" onclick="deleteLog('${dateKey}')">Delete</button></td>
+      </tr>
+    `;
+    tbody.insertAdjacentHTML("beforeend", row);
+  }
+}
+
+function deleteLog(dateKey) {
+  if (confirm(`Delete log for ${dateKey}?`)) {
+    delete dailyData[dateKey];
+    saveDayData();
+    updateHistoryTable();
+    renderCalendar();
+  }
+}
+
+function saveMeals() { loadDayData(); dailyData[selectedDateString].meals = {
+  breakfast: document.getElementById("breakfast").value,
+  lunch: document.getElementById("lunch").value,
+  dinner: document.getElementById("dinner").value,
+  snacks: document.getElementById("snacks").value
+}; saveDayData(); updateSummary(); alert("Meals saved!"); }
+function saveWorkout() { loadDayData(); dailyData[selectedDateString].workout = {
+  type: document.getElementById("workoutType").value,
+  calories: document.getElementById("workoutCalories").value
+}; saveDayData(); updateSummary(); alert("Workout saved!"); }
+function saveWater() { loadDayData(); dailyData[selectedDateString].water = {
+  glasses: document.getElementById("waterGlasses").value
+}; saveDayData(); alert("Water saved!"); }
+function saveMeasurements() { loadDayData(); dailyData[selectedDateString].measurements = {
+  waist: document.getElementById("waist").value,
+  hips: document.getElementById("hips").value,
+  arms: document.getElementById("arms").value,
+  thighs: document.getElementById("thighs").value
+}; saveDayData(); alert("Measurements saved!"); }
+
+renderCalendar();
+updateHistoryTable();
+</script>
+</body>
+</html>
