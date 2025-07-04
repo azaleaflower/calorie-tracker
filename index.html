@@ -202,10 +202,30 @@
     </div>
   </div>
 
+  <div class="history" style="max-width:90%; margin:20px auto;">
+    <h3 style="text-align:center;">📅 Daily Log History</h3>
+    <table id="historyTable" style="width:100%; border-collapse:collapse; background:#fff0f5;">
+      <thead>
+        <tr>
+          <th style="border:1px solid #ffcce0;">Date</th>
+          <th style="border:1px solid #ffcce0;">Breakfast</th>
+          <th style="border:1px solid #ffcce0;">Lunch</th>
+          <th style="border:1px solid #ffcce0;">Dinner</th>
+          <th style="border:1px solid #ffcce0;">Snacks</th>
+          <th style="border:1px solid #ffcce0;">Workout</th>
+          <th style="border:1px solid #ffcce0;">Water</th>
+          <th style="border:1px solid #ffcce0;">Measurements</th>
+        </tr>
+      </thead>
+      <tbody id="historyBody"></tbody>
+    </table>
+  </div>
+
 <script>
 let today = new Date();
 let selectedDate = new Date();
 let selectedDateString = "";
+let dailyData = JSON.parse(localStorage.getItem("trackerData") || "{}");
 
 function renderCalendar() {
   const year = today.getFullYear();
@@ -227,14 +247,12 @@ function renderCalendar() {
     html += "<td></td>";
   }
 
-  const savedData = JSON.parse(localStorage.getItem("trackerData") || "{}");
-
   for (let day=1; day<=daysInMonth; day++) {
     if ((firstDay + day - 1) % 7 === 0 && day !== 1) {
       html += "</tr><tr>";
     }
     const dateKey = `${year}-${String(month+1).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
-    const hasData = savedData[dateKey];
+    const hasData = dailyData[dateKey];
     html += `<td onclick="selectDate(${year},${month},${day})">
       ${day}
       ${hasData ? '<div class="dot"></div>' : ''}
@@ -254,10 +272,9 @@ function showTab(name) {
   document.getElementById(name + "Tab").style.display = "block";
 }
 
-let dailyData = JSON.parse(localStorage.getItem("trackerData") || "{}");
-
 function saveDayData() {
   localStorage.setItem("trackerData", JSON.stringify(dailyData));
+  updateHistoryTable();
 }
 
 function loadDayData() {
@@ -300,6 +317,28 @@ function selectDate(y,m,d) {
 
   showTab('meals');
   updateSummary();
+}
+
+function updateHistoryTable() {
+  const tbody = document.getElementById("historyBody");
+  tbody.innerHTML = "";
+  for (const dateKey in dailyData) {
+    const day = dailyData[dateKey];
+    const measurements = `W:${day.measurements?.waist || "-"} H:${day.measurements?.hips || "-"} A:${day.measurements?.arms || "-"} T:${day.measurements?.thighs || "-"}`;
+    const row = `
+      <tr>
+        <td>${dateKey}</td>
+        <td>${day.meals?.breakfast || "-"}</td>
+        <td>${day.meals?.lunch || "-"}</td>
+        <td>${day.meals?.dinner || "-"}</td>
+        <td>${day.meals?.snacks || "-"}</td>
+        <td>${day.workout?.type || "-"} (${day.workout?.calories || "0"})</td>
+        <td>${day.water?.glasses || "0"}</td>
+        <td>${measurements}</td>
+      </tr>
+    `;
+    tbody.insertAdjacentHTML("beforeend", row);
+  }
 }
 
 function saveMeals() {
@@ -348,26 +387,7 @@ function saveMeasurements() {
 }
 
 renderCalendar();
+updateHistoryTable();
 </script>
 </body>
 </html>
-<div class="history" style="max-width:90%; margin:20px auto;">
-  <h3 style="text-align:center;">📅 Daily Log History</h3>
-  <table id="historyTable" style="width:100%; border-collapse:collapse; background:#fff0f5;">
-    <thead>
-      <tr>
-        <th style="border:1px solid #ffcce0;">Date</th>
-        <th style="border:1px solid #ffcce0;">Breakfast</th>
-        <th style="border:1px solid #ffcce0;">Lunch</th>
-        <th style="border:1px solid #ffcce0;">Dinner</th>
-        <th style="border:1px solid #ffcce0;">Snacks</th>
-        <th style="border:1px solid #ffcce0;">Workout</th>
-        <th style="border:1px solid #ffcce0;">Water</th>
-        <th style="border:1px solid #ffcce0;">Measurements</th>
-      </tr>
-    </thead>
-    <tbody id="historyBody">
-      <!-- we will fill this in step 2 -->
-    </tbody>
-  </table>
-</div>
